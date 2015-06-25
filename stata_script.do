@@ -1,24 +1,21 @@
-
-*Clean
-sort code2
-by code2: gen id = 1 if _n==1
-replace id = sum(id)
-replace id = . if missing(code2)
-keep id year hom_rate_riv conflicto_12 alianza_sinconf violentconflict agresion_a_militares lnPIB ind_marginacion niv_pobreza mean_edu niv_sinprim niv_desempleo coef_gini tomasC Laboratorios erad_mar erad_pop Imar Icoca Iopi Border1 Border2 Border3 Border4 route PortGolfo PortPacifico eficiencia WEFICI hom_rate_riv SPATIALLAG co_count coca mar opi lab tomas e_mar e_pop 
-
-
-
-clear
-*set directory;
-cd "C:\Users\rsanchez\Dropbox\tesis\Análisis\tesiscompu"
+*Clear and set directory;
+	clear
+	cd "C:\Users\rsanchez\Dropbox\Tesis_ITAM_RS"
 
 *database query;
-use "Limpia2.dta"
-xtset code2 year
+	use "tesisDB.dta"
+	xtset id year
 
+*Clean code
+	keep id year hom_rate_riv conflicto_12 alianza_sinconf violentconflict agresion_a_militares 
+	lnPIB ind_marginacion niv_pobreza mean_edu niv_sinprim niv_desempleo coef_gini tomasC 
+	Laboratorios erad_mar erad_pop Imar Icoca Iopi Border1 Border2 Border3 Border4 route PortGolfo 
+	PortPacifico eficiencia WEFICI hom_rate_riv SPATIALLAG co_count coca mar opi lab tomas e_mar e_pop estructura
+	PrP15PRIM lnUnemployment 
 
 *Variable construction;
-tabulate estructura, gen(e)
+	tabulate estructura, gen(e)
+
 
 
 *Tabla 1) Parametrización de la violencia (Nivel Municipal)
@@ -59,29 +56,31 @@ tabulate estructura, gen(e)
 		*outreg2 using 2.doc, append ctitle(agresion_a_militares)
 	*Modelo 11	*homicidios con control de municipios.
 		xtpoisson hom_rate_riv Border1 Border2 Border3 Border4 route PortGolfo PortPacifico coca mar opi lab tomas e_mar e_pop e1 e2 e3, pa corr(unstructured)
+
+
+
+************************************************************************************************************************************************		
 		
-		
-		
-********Análisis de cluster*******************************************************************************************************************************************************;
-***************************************************************************************************************************************************************;
+********Análisis de cluster********;
+***********************************;
 clear
-use "Limpia2.dta"
+use "tesisDB.dta"
 xtset code2 year
 
-*Clusterización se realizó con año base 2010
-keep if year==2010
+*Clusterización -se realizó con año base 2010-
+	keep if year==2010
+
 
 ******************************************
-*Clusterización Socioeconómica
-	*wardslinkage;
+*Clusterización Socioeconómica -Wardslinkage-;
 	cluster wardslinkage lnPIB PrP15PRIM mean_edu lnUnemployment Coeficiente_de_Gini, measure(L2) name(cluster1)
 	cluster dendrogram cluster1, cutnumber(10)
-	cluster generate estructura= groups(3), name(cluster1) ties(error)
+	cluster generate estructura_= groups(3), name(cluster1) ties(error)
 	drop cluster1_id cluster1_ord cluster1_hgt 
 	*tabstat PIB Unemployment mean_edu inequality if year==2008, statistics( mean var median ) by(estructura) columns(variables)
 
 ************************************************
-*Clusterización sobre violencia e impunidad
+*Clusterización sobre violencia e impunidad -Wardslinkage-;
 	cluster  wardslinkage  LWhom_rate_riv Lhom_rate_riv Leficiencia LWeficiencia, measure(L2) name(cluster6)
 	cluster dendrogram cluster6, cutnumber(5)
 	cluster generate categoriaviolencia2= groups(3), name(cluster6) ties(error)
@@ -92,3 +91,20 @@ keep if year==2010
 		replace categoriaviolencia=2 if categoriaviolencia==4
 		table categoriaviolencia
 		drop cluster5_id cluster5_ord cluster5_hgt 
+
+
+		
+******************
+*Sequia
+******************
+	*Diferencia en Diferencias de la sequia-> con kernel Maching
+	*Homicidios
+		global xlist  km2 lnPIB lnUnemployment ind_marginacion niv_sinprim niv_pobreza niv_rezago_edu coef_gini
+		global Border1 Border2 Border3 route PortPacifico
+		global estructura
+	*diferencia en diferencias
+	diff erad_marijuana, t(tratamientosequiamar) p(ttratamientosequiamar) cov($xlist) id(code) kernel rcs  qdid(.5) 
+
+	
+	
+	
