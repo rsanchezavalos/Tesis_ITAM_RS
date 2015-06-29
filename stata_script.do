@@ -5,13 +5,8 @@
 	use "tesisDB.dta"
 	xtset id year
 
-clear
-cd "C:\Users\rsanchez\Dropbox\tesis\Análisis\tesiscompu"
-use "Limpia2.dta"
-xtset id year
 *Clean code
 	keep id year hom_rate_riv conflicto_12 alianza_sinconf violentconflict niv_rezago_edu agresion_a_militares lnPIB ind_marginacion niv_pobreza mean_edu niv_sinprim niv_desempleo coef_gini tomasC Laboratorios erad_mar erad_pop Imar Icoca Iopi Border1 Border2 Border3 Border4 route PortGolfo PortPacifico eficiencia WEFICI hom_rate_riv SPATIALLAG co_count coca mar opi lab tomas e_mar e_pop estructura PrP15PRIM lnUnemployment code erad_marijuana tratamientosequiamar ttratamientosequiamar km2 dens_mar PR_Secuestro  S_Extorsion PR_Extorsion  S_Robo  PR_Robo  S_Allanamiento  PR_Allanamiento  poverty  S_Secuestro  port rivalry_homicide
-	save "C:\Users\rsanchez\Dropbox\Tesis_ITAM_RS\tesisDB.dta", replace
 
 *Variable construction;
 	tabulate estructura, gen(e)
