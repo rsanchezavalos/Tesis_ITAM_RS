@@ -1,16 +1,20 @@
 *Clear and set directory;
 	clear
 	cd "C:\Users\rsanchez\Dropbox\Tesis_ITAM_RS"
+	cd "C:\Users\rsanchez\Dropbox\tesis\Análisis\tesiscompu"
+	use "Limpia2.dta"
 *database query;
 	use "tesisDB.dta"
 	xtset id year
 
 *Clean code
-	keep id year hom_rate_riv conflicto_12 alianza_sinconf violentconflict niv_rezago_edu agresion_a_militares lnPIB ind_marginacion niv_pobreza mean_edu niv_sinprim niv_desempleo coef_gini tomasC Laboratorios erad_mar erad_pop Imar Icoca Iopi Border1 Border2 Border3 Border4 route PortGolfo PortPacifico eficiencia WEFICI hom_rate_riv SPATIALLAG co_count coca mar opi lab tomas e_mar e_pop estructura PrP15PRIM lnUnemployment code erad_marijuana tratamientosequiamar ttratamientosequiamar km2 dens_mar PR_Secuestro  S_Extorsion PR_Extorsion  S_Robo  PR_Robo  S_Allanamiento  PR_Allanamiento  poverty  S_Secuestro  port rivalry_homicide
+	keep id LWhom_rate_riv year hom_rate_riv conflicto_12 alianza_sinconf violentconflict niv_rezago_edu agresion_a_militares lnPIB ind_marginacion niv_pobreza mean_edu niv_sinprim niv_desempleo coef_gini tomasC Laboratorios erad_mar erad_pop Imar Icoca Iopi Border1 Border2 Border3 Border4 route PortGolfo PortPacifico eficiencia WEFICI hom_rate_riv SPATIALLAG co_count coca mar opi lab tomas e_mar e_pop estructura PrP15PRIM lnUnemployment erad_marijuana tratamientosequiamar ttratamientosequiamar km2 dens_mar PR_Secuestro  S_Extorsion PR_Extorsion  S_Robo  PR_Robo  S_Allanamiento  PR_Allanamiento  poverty  S_Secuestro  port rivalry_homicide
 
 *Variable construction;
 	tabulate estructura, gen(e)
 
+
+	
 *Tabla 1) Parametrización de la violencia (Nivel Municipal)
 	*Modelo 1
 		xtpoisson hom_rate_riv lnPIB ind_marginacion niv_pobreza mean_edu niv_sinprim niv_desempleo coef_gini, pa corr(unstructured) 
@@ -37,7 +41,7 @@
 	*Modelo 7
 		xtlogit conflicto_12 Border1 Border2 Border3 Border4 route PortGolfo PortPacifico coca mar opi lab tomas e_mar e_pop e1 e2 e3, pa corr(unstructured)
 
-		d*outreg2 using 2.doc, append ctitle(Conflicto)
+		*outreg2 using 2.doc, append ctitle(Conflicto)
 	*Modelo 8	
 		xtlogit alianza_sinconf Border1 Border2 Border3 Border4 route PortGolfo PortPacifico coca mar opi lab tomas e_mar e_pop e1 e2 e3, pa corr(unstructured)
 		*outreg2 using 2.doc, append ctitle(Alianza_NC)
@@ -54,7 +58,7 @@
 ********Análisis de cluster********;
 clear
 use "tesisDB.dta"
-xtset code2 year
+xtset id year
 	*-se realizó con año base 2010-
 	keep if year==2010
 
