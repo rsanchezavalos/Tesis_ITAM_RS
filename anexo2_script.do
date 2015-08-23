@@ -34,6 +34,7 @@ gen Dlnhom=D.lnhom
 
 * iii) Modelo Engle Granger de cointegración
 	regress robo homicidio 
+	outreg2 using cointegracion, replace tex(fragment) 
 	predict Rhat, residual
 *iv)  prueba Dickey-Fuller en residuales 
 		*Para asegurarnos que las variables estén co-integradas y que el modelo es apropiado se debe probar que los residuales son I(1) 
