@@ -9,6 +9,12 @@
   box-sizing: border-box;
 }
 
+#municipalities .active, #states .active {
+  fill: #89a;
+}
+
+
+
 .municipalities {
   fill: #222;
 }
@@ -73,7 +79,8 @@ div.tooltip {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
 </head>
 
 
@@ -95,11 +102,6 @@ div.tooltip {
 
   <script type="text/javascript">
     //******************************
-    var formatTime = "help me"
-
-    var text_div = d3.select("body").append("div").attr("class","boxed")
-        .style("opacity", 0);
-
     //variable definition
     var m_width = $(window ).width()*.60,
         width = 960,
@@ -107,6 +109,11 @@ div.tooltip {
         state,
         state;
 
+
+    var text_div = d3.select("body").append("div").attr("class","boxed")
+        .style("opacity", 50);
+
+    //geographic projection definition
     var projection = d3.geo.conicConformal()
         .rotate([102, 0])
         .center([0, 24])
@@ -127,15 +134,17 @@ div.tooltip {
     // Map loader
     d3.json("mx.json", function(error, mx) {
       if (error) throw error;
-      svg.append("g").attr("id","transform").append("g")
+      svg.append("g")
         .attr("id", "municipalities")
         .attr("class", "municipalities")
         .selectAll("path")
         .data(topojson.feature(mx, mx.objects.municipalities).features)
-        .enter().append("path")
-          .attr("d", path)
+        .enter()
+        .append("path")
+        //attribute for color function
           .attr("class", "color-boundary")
           .attr("fill","black")
+          .attr("d", path)
           .on("mouseover", function(d){
             div.transition()        
               .duration(1000)      
@@ -154,31 +163,25 @@ div.tooltip {
             div.transition()        
             .duration(500)      
             .style("opacity", 0);   
-            text_div.transition()        
-              .duration(2000)      
-              .style("opacity", 0);      
+            });
+        svg.append("path")
+            .datum(topojson.mesh(mx, mx.objects.municipalities, function(a, b) { return a.properties.state !== b.properties.state; }))
+            .attr("class", "state-boundary")
+            .attr("d", path)
+            .on("mouseover", function(d){
+              console.log(d);
             });
 
 
+          svg.append("path")
+              .datum(topojson.mesh(mx, mx.objects.municipalities, function(a, b) { return a.properties.state === b.properties.state && a !== b; }))
+              .attr("class", "municipality-boundary")
+              .attr("d", path)
+              .on("mouseover", function(d){
+                console.log(d);
+            });
+        });
 
-
-      svg.append("path")
-          .datum(topojson.mesh(mx, mx.objects.municipalities, function(a, b) { return a.properties.state !== b.properties.state; }))
-          .attr("class", "state-boundary")
-          .attr("d", path)
-          .on("mouseover", function(d){
-            console.log(d);
-          });
-
-
-      svg.append("path")
-          .datum(topojson.mesh(mx, mx.objects.municipalities, function(a, b) { return a.properties.state === b.properties.state && a !== b; }))
-          .attr("class", "municipality-boundary")
-          .attr("d", path)
-          .on("mouseover", function(d){
-            console.log(d);
-          });
-    });
 
     //create svg to hold map
     var svg = d3.select("#map").append("svg")
@@ -314,7 +317,6 @@ div.tooltip {
     //******************************
 
   </script>
-
 
 
 </body>
