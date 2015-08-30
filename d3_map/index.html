@@ -60,27 +60,52 @@
         div.tooltip {   
           position: absolute;           
           text-align: center;           
-          width: 400px;                  
-          height: 28px;                 
+          width: 300px;                  
+          height: 90px;                 
           padding: 2px;             
           font: 12px sans-serif;        
-          background: "#bdbdbd";   
           border: 0px;      
           border-radius: 1px;           
           pointer-events: none;         
+          font: 14px/16px Arial, Helvetica, sans-serif;
+          background: rgba(255,255,255,0.8);
+          box-shadow: 0 0 15px rgba(0,0,0,0.2);
+          border-radius: 5px;
         }
 
         .boxed {
-            margin-left: auto;
-            margin-right: auto;
+            margin-left: 34%;
             text-align: center;  
             width: 30%;  
             float:left; 
+            z-index:1;
+            position: absolute;
+        }
+        .mun_text{
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;  
+            float:left; 
+        }
+
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
 
         }
+
      .form-control{
           display: inline-block;
           width: 100%;                  
+          float:left;
         }
      .blank_row
       {
@@ -95,7 +120,7 @@
     <div id="map">
     <div id="text_container">
       <select class="form-control" onchange="myFunction(this.value)">
-        <option value="Violencia e Impunidad">Elige una Variable</option>
+        <option value="Elige una Variable">Elige una Variable</option>
         <option value="Violencia e Impunidad">Violencia e Impunidad</option>
         <option value="Costo de Oportunidad">Costo de Oportunidad</option>
         <option value="Competencia y Rivalidad">Competencia y Rivalidad</option>
@@ -109,7 +134,7 @@
 
     $("body").css("overflow", "auto");
     //variable definition
-    var m_width = $("#map").width() * .6,
+    var m_width = $("#map").width() * .65,
         width = 960,
         height = 628,
         country,
@@ -137,7 +162,7 @@
 
      var text_div = d3.select("#text_container").attr("class","boxed").attr("id","text_container")
      .style("opacity", 50)
-     .attr("width", m_width*.5).append("div").html('<br>Municipio:<br></br>Estado: <br></br>Violencia e Impunidad:<br></br>Costo de Oportunidad: <br></br>Competencia y Rivalidad: ').attr("id","mun_text")
+     .attr("width", m_width*.5).append("div").html('<br></br>Hover over a Municipality<br></br>').attr("id","mun_text").attr("class","info")
 
 
 
@@ -158,23 +183,24 @@
         .attr("d", path)
         .on("mouseover", function(d){
           div.transition()        
-            .duration(200)      
+            .duration(300)      
             .style("opacity", .9);      
-          console.log(d.properties);
-          div.html("<br> Municipio: " + d.properties.name + '<br/><br>Estado: ' + d.properties.state + "<br/>" )  
+          //console.log(d.properties);
+          div.html("<br> Municipio: " + d.properties.name + '<br/><br>Estado: ' + d.properties.state + "<br/>" )
             .style("left", (d3.event.pageX) + "px")     
             .style("top", (d3.event.pageY - 28) + "px");;
+
           text_div      
             .style("opacity", 50);      
-          text_div.html("<br>Municipio: " + d.properties.name + "<br/><br>Estado: " + d.properties.state + "<br/>"
-            + "<br/>Violencia e Impunidad: " + d.properties.categoriaviolencia + "<br/>"
-            + "<br/>Costo de Oportunidad: " + d.properties.costo_oportunidad + "<br/>"
-            + "<br/>Competencia y Rivalidad: " + d.properties.industria + "<br/>"
-            )  
-            .style("left", (d3.event.pageX) + "px")     
-            .style("top", (d3.event.pageY - 28) + "px")
+          text_div.html("<h4>Variables Resumen</h4><br/>Violencia e Impunidad: " + d.properties.categoriaviolencia + "<br/>" + "<br/>Costo de Oportunidad: " + d.properties.costo_oportunidad + 
+            "<br/>"+"<br/>Competencia y Rivalidad: " + d.properties.industria + "<br/>")
           })
-
+        .on("mouseout", function(d) {       
+            div.transition()        
+            .duration(800)      
+            .style("opacity", 0);   
+            text_div.html('<br></br>Hover over a Municipality<br></br>')
+          })
         .on("click", municipality_clicked);
           });
 
@@ -308,6 +334,9 @@
         }
         else if(d === "Nivel de Riesgo"){
           fn = mis_colores4;
+        }
+        else if(d=="Elige una Variable"){
+          fn = "grey";
         }
         d3.selectAll(".color-boundary")
           .attr("fill",fn)
