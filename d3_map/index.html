@@ -1,27 +1,27 @@
 <!DOCTYPE html>
+
 <html lang="en">
   <head>
-    <title>Tesis_map</title>
-    <meta charset="utf-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
-    <script src="//code.jquery.com/jquery-2.0.0.js"></script>
+      <title>Tesis_map</title>
+      <meta charset="utf-8">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+      <script src="//code.jquery.com/jquery-2.0.0.js"></script>
 
     <style>
         #map {
           background-color: #fff;
-          border: 1px solid #ccc;
+          border-width:5px; 
+          border: double #ccc;
           margin: auto;
         }
-
         .background {
           fill: none;
           pointer-events: all;
         }
-
         #municipalities .active, #states .active {
           fill: #89a;
         }
@@ -95,12 +95,11 @@
     <div id="map">
     <div id="text_container">
       <select class="form-control" onchange="myFunction(this.value)">
-        <option value="Basic">Basic</option>
-        <option value="Color A">Color A</option>
-        <option value="Color B">Color B</option>
-        <option>3</option>
-        <option>4</option>
-        <option>5</option>
+        <option value="Violencia e Impunidad">Elige una Variable</option>
+        <option value="Violencia e Impunidad">Violencia e Impunidad</option>
+        <option value="Costo de Oportunidad">Costo de Oportunidad</option>
+        <option value="Competencia y Rivalidad">Competencia y Rivalidad</option>
+        <option value="Nivel de Riesgo">Nivel de Riesgo</option>
       </select>
       </div>
     </div>
@@ -114,7 +113,9 @@
         width = 960,
         height = 628,
         country,
-        state;
+        state,
+        mun;
+
 
     //geographic projection definition
     var projection = d3.geo.conicConformal()
@@ -174,7 +175,7 @@
             .style("top", (d3.event.pageY - 28) + "px")
           })
 
-        .on("click", country_clicked);
+        .on("click", municipality_clicked);
           });
 
     var svg = d3.select("#map").append("svg")
@@ -187,7 +188,7 @@
         .attr("class", "background")
         .attr("width", width)
         .attr("height", height)
-        .on("click", country_clicked);
+        .on("click", municipality_clicked);
 
 
     var g = svg.append("g");
@@ -213,79 +214,20 @@
       return [x, y, z];
     }
 
-    //state_clicked - podemos agregar funcionalidad para que aparezca un cuadro.
-    function country_clicked(d) {
-      g.selectAll(["#states", "#cities"]).remove();
+    //municipality_clicked function
+    function municipality_clicked(d) {
+      g.selectAll(["#states"]).remove();
       state = null;
-      if (country) {
-        g.selectAll("#" + country.id).style('display', null);
-      }
-      if (d && country !== d) {
+      if (d && mun !== d) {
         var xyz = get_xyz(d);
-        country = d;
-        if (d.id  == 'USA' || d.id == 'JPN') {
-          d3.json("/json/states_" + d.id.toLowerCase() + ".topo.json", function(error, us) {
-            g.append("g")
-              .attr("id", "states")
-              .selectAll("path")
-              .data(topojson.feature(us, us.objects.states).features)
-              .enter()
-              .append("path")
-              .attr("id", function(d) { return d.id; })
-              .attr("class", "active")
-              .attr("d", path)
-              .on("click", state_clicked);
-            zoom(xyz);
-            g.selectAll("#" + d.id).style('display', 'none');
-          });      
-        } else {
-          zoom(xyz);
-        }
+        mun = d;
+        zoom(xyz);
       } else {
         var xyz = [width / 2, height / 2, 1];
-        country = null;
+        mun = null;
         zoom(xyz);
       }
     }
-
-    function state_clicked(d) {
-      g.selectAll("#cities").remove();
-      if (d && state !== d) {
-        var xyz = get_xyz(d);
-        state = d;
-        country_code = state.id.substring(0, 3).toLowerCase();
-        state_name = state.properties.name;
-        d3.json("/json/cities_" + country_code + ".topo.json", function(error, us) {
-          g.append("g")
-            .attr("id", "cities")
-            .selectAll("path")
-            .data(topojson.feature(us, us.objects.cities).features.filter(function(d) { return state_name == d.properties.state; }))
-            .enter()
-            .append("path")
-            .attr("id", function(d) { return d.properties.name; })
-            .attr("class", "city")
-            .attr("d", path.pointRadius(20 / xyz[2]));
-          zoom(xyz);
-        });      
-      } else {
-        state = null;
-        country_clicked(country);
-      }
-    }
-    $(window).resize(function() {
-      var w = $("#map").width();
-      svg.attr("width", w);
-      svg.attr("height", w * height / width);
-    });
-
-    //Not working
-       svg.selectAll(".municipalities").append("path")
-            .datum(topojson.mesh(mx, mx.objects.municipalities, function(a, b) { return a.properties.state !== b.properties.state; }))
-            .attr("class", "state-boundary")
-            .attr("d", path)
-            .on("mouseover", function(d){
-              console.log(d);
-            });
 
 
       //******************************
@@ -299,20 +241,73 @@
             return "#9e0142";
           }
         }
-      var mis_colores = function(d){
-        if (d.properties.state % 2 == 1) {
-          return "#fc8d59"
+
+
+
+      var mis_colores1 = function(d){
+        if (d.properties.categoriaviolencia == 1) {
+          return "#efedf5"
+        } else if(d.properties.categoriaviolencia == 2){
+          return "#bcbddc"
+        } else if(d.properties.categoriaviolencia == 3){
+          return "#756bb1"        
         } else{
-          return "#99d594"
+          return "black"
         }
       }
+
+      var mis_colores2 = function(d){
+        if (d.properties.costo_oportunidad == 1) {
+          return "#f7fcb9"
+        } else if(d.properties.costo_oportunidad == 2){
+          return "#addd8e"
+        } else if(d.properties.costo_oportunidad  == 3){
+          return "#31a354"        
+        } else{
+          return "black"
+        }
+      }
+
+      var mis_colores3 = function(d){
+        if (d.properties.industria  == 0) {
+          return "#eff3ff"
+        } else if(d.properties.industria == 1){
+          return "#bdd7e7"
+        } else if(d.properties.industria  == 2){
+          return "#6baed6"        
+        } else if(d.properties.industria  == 3){
+          return "#2171b5"        
+        } else{
+          return "black"
+        }
+      }
+      var mis_colores4 = function(d){
+        if (d.properties.riesgo_violencia == 1) {
+          return "#fee0d2"
+        } else if(d.properties.riesgo_violencia == 2){
+          return "#fc9272"
+        } else if(d.properties.riesgo_violencia == 3){
+          return "#de2d26"        
+        } else{
+          return "black"
+        }
+      }
+
+
+
       function myFunction(d){
         var fn;
-        if(d === "Color A"){
-          fn = mis_colores;
+        if(d === "Violencia e Impunidad"){
+          fn = mis_colores1;
         }
-        else if(d === "Color B"){
-          fn = mycolorfunction;
+        else if(d === "Costo de Oportunidad"){
+          fn = mis_colores2;
+        }
+        else if(d === "Competencia y Rivalidad"){
+          fn = mis_colores3;
+        }
+        else if(d === "Nivel de Riesgo"){
+          fn = mis_colores4;
         }
         d3.selectAll(".color-boundary")
           .attr("fill",fn)
