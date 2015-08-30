@@ -11,7 +11,6 @@
     <script src="//code.jquery.com/jquery-2.0.0.js"></script>
 
     <style>
-
         #map {
           background-color: #fff;
           border: 1px solid #ccc;
@@ -72,43 +71,39 @@
         }
 
         .boxed {
-            color: black;
             margin-left: auto;
             margin-right: auto;
             text-align: center;  
-            border-radius: 25px;
-            border: 2px solid black;
-            padding: 20px;
-            height: 80px;
-            width: 30%;                  
+            width: 30%;  
+            float:left; 
+
         }
      .form-control{
           display: inline-block;
-          width: 30%;                  
+          width: 100%;                  
         }
+     .blank_row
+      {
+          height: 10px 
+          background-color: #FFFFFF;
+      }
 
     </style>
   </head>
   <body>
 
-    <select class="form-control" onchange="myFunction(this.value)">
-      <option value="Basic">Basic</option>
-      <option value="Color A">Color A</option>
-      <option value="Color B">Color B</option>
-      <option>3</option>
-      <option>4</option>
-      <option>5</option>
-    </select>
-    <select class="form-control" onchange="myFunction(this.value)">
-      <option value="Basic">Basic</option>
-      <option value="Color A">Color A</option>
-      <option value="Color B">Color B</option>
-      <option>3</option>
-      <option>4</option>
-      <option>5</option>
-    </select>
-
-    <div id="map"></div>
+    <div id="map">
+    <div id="text_container">
+      <select class="form-control" onchange="myFunction(this.value)">
+        <option value="Basic">Basic</option>
+        <option value="Color A">Color A</option>
+        <option value="Color B">Color B</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+      </select>
+      </div>
+    </div>
     <script src="//d3js.org/d3.v3.min.js"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
     <script>
@@ -134,16 +129,20 @@
 
     //******************************
     //Div information design, could be a simple box
+
     var div = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-    var text_div = d3.select("body").append("div").attr("class","boxed")
-        .style("opacity", 50);
- 
+     var text_div = d3.select("#text_container").attr("class","boxed").attr("id","text_container")
+     .style("opacity", 50)
+     .attr("width", m_width*.5).append("div").html('<br>Municipio:<br></br>Estado: <br></br>Violencia e Impunidad:<br></br>Costo de Oportunidad: <br></br>Competencia y Rivalidad: ').attr("id","mun_text")
+
+
+
     //******************************
     // Map loader
-    d3.json("mx.json", function(error, mx) {
+    d3.json("mx_2.json", function(error, mx) {
       if (error) throw error;
         g.append("g")
         .attr("id", "municipalities")
@@ -161,12 +160,16 @@
             .duration(200)      
             .style("opacity", .9);      
           console.log(d.properties);
-          div.html("Municipio: " + d.properties.name + "<br/>Estado: " + d.properties.state + "<br/>" )  
+          div.html("<br> Municipio: " + d.properties.name + '<br/><br>Estado: ' + d.properties.state + "<br/>" )  
             .style("left", (d3.event.pageX) + "px")     
             .style("top", (d3.event.pageY - 28) + "px");;
           text_div      
             .style("opacity", 50);      
-          text_div.html("Municipio: " + d.properties.name + "<br/>Estado: " + d.properties.state + "<br/>" )  
+          text_div.html("<br>Municipio: " + d.properties.name + "<br/><br>Estado: " + d.properties.state + "<br/>"
+            + "<br/>Violencia e Impunidad: " + d.properties.categoriaviolencia + "<br/>"
+            + "<br/>Costo de Oportunidad: " + d.properties.costo_oportunidad + "<br/>"
+            + "<br/>Competencia y Rivalidad: " + d.properties.industria + "<br/>"
+            )  
             .style("left", (d3.event.pageX) + "px")     
             .style("top", (d3.event.pageY - 28) + "px")
           })
@@ -175,6 +178,7 @@
           });
 
     var svg = d3.select("#map").append("svg")
+        .attr("id","map_container")
         .attr("preserveAspectRatio", "xMidYMid")
         .attr("viewBox", "0 0 " + width + " " + height)
         .attr("width", m_width)
@@ -274,6 +278,7 @@
       svg.attr("height", w * height / width);
     });
 
+    //Not working
        svg.selectAll(".municipalities").append("path")
             .datum(topojson.mesh(mx, mx.objects.municipalities, function(a, b) { return a.properties.state !== b.properties.state; }))
             .attr("class", "state-boundary")
@@ -318,4 +323,5 @@
   </body>
 
 </html>
+
 
