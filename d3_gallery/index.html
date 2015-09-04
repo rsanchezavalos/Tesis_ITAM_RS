@@ -59,6 +59,7 @@
         }
 
         div.tooltip {   
+          pointer-events:none;
           position: absolute;           
           text-align: center;           
           width: 300px;                  
@@ -100,9 +101,10 @@
             position: absolute;
         }
         .mun_text{
+            pointer-events: none;
             margin-left: auto;
             margin-right: auto;
-            text-align: center;  
+            text-align: center; 
             float:left; 
         }
 
@@ -133,6 +135,7 @@
             display: inline-block;
             width: 100%;                  
             float:left;
+            pointer-events: auto;
           }
 
        .blank_row{
@@ -160,7 +163,7 @@
     <div id="map">
     <div id="text_container">
       <select class="form-control" onchange="myFunction(this.value)">
-        <option value="Elige una Variable">Elige una Variable</option>
+        <option value="Select a Variable">Select a Variable</option>
         <option value="Violencia e Impunidad">Violencia e Impunidad</option>
         <option value="Costo de Oportunidad">Costo de Oportunidad</option>
         <option value="Competencia y Rivalidad">Competencia y Rivalidad</option>
@@ -171,6 +174,18 @@
     <script src="//d3js.org/d3.v3.min.js"></script>
     <script src="//d3js.org/topojson.v1.min.js"></script>
     <script>
+
+    //******************************
+    //Div information design, could be a simple box
+
+    var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+
+     var text_div = d3.select("#text_container").attr("class","boxed").attr("id","text_container")
+     .style("opacity", 50).style("pointer-events","none")
+     .attr("width", m_width*.5).append("div").html('<br></br>Hover over a Municipality<br></br>').attr("id","mun_text").attr("class","info")
 
     $("body").css("overflow", "visible");
     //variable definition
@@ -192,19 +207,6 @@
 
     var path = d3.geo.path()
         .projection(projection);
-
-    //******************************
-    //Div information design, could be a simple box
-
-    var div = d3.select("body").append("div")
-    .attr("class", "tooltip")
-    .style("opacity", 0);
-
-
-     var text_div = d3.select("#text_container").attr("class","boxed").attr("id","text_container")
-     .style("opacity", 50)
-     .attr("width", m_width*.5).append("div").html('<br></br>Hover over a Municipality<br></br>').attr("id","mun_text").attr("class","info")
-
 
 
 
@@ -233,7 +235,7 @@
             .style("top", (d3.event.pageY - 28) + "px");;
 
           text_div      
-            .style("opacity", 50);      
+            .style("opacity", 50).style("pointer-events","none");      
           text_div.html("<h4>Variables Resumen</h4><br/>Violencia e Impunidad: " + d.properties.categoriaviolencia + "<br/>" + "<br/>Costo de Oportunidad: " + d.properties.costo_oportunidad + 
             "<br/>"+"<br/>Competencia y Rivalidad: " + d.properties.industria + "<br/>")
           })
@@ -281,6 +283,7 @@
       var y = (bounds[1][1] + bounds[0][1]) / 2 + (height / z / 6);
       return [x, y, z];
     }
+
 
     //municipality_clicked function
     function municipality_clicked(d) {
@@ -372,7 +375,7 @@
           fn = colores4
           label.html('<div class="label_box" style="background-color:#eff3ff;"></div> <div class="label_text">0</div>' + '<div class="label_box" style="background-color:#bdd7e7;"></div> <div class="label_text">1</div>' + '<div class="label_box" style="background-color:#6baed6;"></div> <div class="label_text">2</div>'+ '<div class="label_box" style="background-color:#2171b5;"></div><div class="label_text">3</div>');
         }
-        else if(d=="Elige una Variable"){
+        else if(d=="Select a Variable"){
           fn = "grey"
           label.html('');
         }
