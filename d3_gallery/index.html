@@ -13,6 +13,7 @@
 
     <style>
         #map {
+          position: relative;
           background-color: #fff;
           border-width:5px; 
           border: double #ccc;
@@ -73,6 +74,23 @@
           border-radius: 5px;
         }
 
+        .tooltip_label {   
+          margin-left: 0%;
+          width: 10%;
+          height: 20%;  
+          float:left; 
+          z-index:1;
+          position: absolute;
+          left:5%;
+          bottom: 10%;
+          font: 12px sans-serif;        
+          border: 0px;      
+          border-radius: 1px;           
+          pointer-events: none;         
+          font: 14px/16px Arial, Helvetica, sans-serif;
+        }
+
+
         .boxed {
             margin-left: 34%;
             text-align: center;  
@@ -88,6 +106,15 @@
             float:left; 
         }
 
+        .label_map{
+            margin-left: auto;
+            margin-right: auto;
+            float:left; 
+            position: fixed;
+            bottom: 0;
+            right: 0;
+        }
+
         .info {
             padding: 6px 8px;
             font: 14px/16px Arial, Helvetica, sans-serif;
@@ -96,22 +123,35 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             border-radius: 5px;
         }
+
         .info h4 {
             margin: 0 0 5px;
             color: #777;
-
         }
 
-     .form-control{
-          display: inline-block;
-          width: 100%;                  
-          float:left;
+       .form-control{
+            display: inline-block;
+            width: 100%;                  
+            float:left;
+          }
+
+       .blank_row{
+            height: 10px 
+            background-color: #FFFFFF;
         }
-     .blank_row
-      {
-          height: 10px 
-          background-color: #FFFFFF;
+
+      .label_text{
+        width: 80%;
+        height: 30px;
+        float: left;        
       }
+      .label_box {   
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        padding-left: 10px
+        }
 
     </style>
   </head>
@@ -132,7 +172,7 @@
     <script src="//d3js.org/topojson.v1.min.js"></script>
     <script>
 
-    $("body").css("overflow", "auto");
+    $("body").css("overflow", "visible");
     //variable definition
     var m_width = $("#map").width() * .65,
         width = 960,
@@ -160,9 +200,11 @@
     .attr("class", "tooltip")
     .style("opacity", 0);
 
+
      var text_div = d3.select("#text_container").attr("class","boxed").attr("id","text_container")
      .style("opacity", 50)
      .attr("width", m_width*.5).append("div").html('<br></br>Hover over a Municipality<br></br>').attr("id","mun_text").attr("class","info")
+
 
 
 
@@ -219,6 +261,7 @@
 
     var g = svg.append("g");
 
+    var label = d3.select("#map").append("div").attr("id","legend")    .attr("class", "tooltip_label").style("opacity", 30);
 
     function zoom(xyz) {
       g.transition()
@@ -229,7 +272,6 @@
         .selectAll(".city")
         .attr("d", path.pointRadius(20.0 / xyz[2]));
     }
-
     function get_xyz(d) {
       var bounds = path.bounds(d);
       var w_scale = (bounds[1][0] - bounds[0][0]) / width;
@@ -260,17 +302,8 @@
       //Color Functions Wrapper
       d3.select(self.frameElement).style("height", height + "px");
       d3.select()
-        function mycolorfunction(value){
-          if (value.properties.name.length % 2 == 1) {
-            return "#af8dc3";
-          } else{
-            return "#9e0142";
-          }
-        }
 
-
-
-      var mis_colores1 = function(d){
+      var colores1 = function(d){
         if (d.properties.categoriaviolencia == 1) {
           return "#efedf5"
         } else if(d.properties.categoriaviolencia == 2){
@@ -282,7 +315,7 @@
         }
       }
 
-      var mis_colores2 = function(d){
+      var colores2 = function(d){
         if (d.properties.costo_oportunidad == 1) {
           return "#f7fcb9"
         } else if(d.properties.costo_oportunidad == 2){
@@ -294,7 +327,19 @@
         }
       }
 
-      var mis_colores3 = function(d){
+      var colores3 = function(d){
+        if (d.properties.riesgo_violencia == 1) {
+          return "#fee0d2"
+        } else if(d.properties.riesgo_violencia == 2){
+          return "#fc9272"
+        } else if(d.properties.riesgo_violencia == 3){
+          return "#de2d26"        
+        } else{
+          return "black"
+        }
+      }
+
+      var colores4 = function(d){
         if (d.properties.industria  == 0) {
           return "#eff3ff"
         } else if(d.properties.industria == 1){
@@ -307,37 +352,31 @@
           return "black"
         }
       }
-      var mis_colores4 = function(d){
-        if (d.properties.riesgo_violencia == 1) {
-          return "#fee0d2"
-        } else if(d.properties.riesgo_violencia == 2){
-          return "#fc9272"
-        } else if(d.properties.riesgo_violencia == 3){
-          return "#de2d26"        
-        } else{
-          return "black"
-        }
-      }
-
 
 
       function myFunction(d){
         var fn;
         if(d === "Violencia e Impunidad"){
-          fn = mis_colores1;
+          fn = colores1
+          label.html('<div class="label_box" style="background-color:#efedf5;"></div> <div class="label_text">1</div><div class="label_box" style="background-color:#bcbddc;"></div> <div class="label_text">2</div><div class="label_box" style="background-color:#756bb1;"></div><div class="label_text">3</div>');
         }
         else if(d === "Costo de Oportunidad"){
-          fn = mis_colores2;
-        }
-        else if(d === "Competencia y Rivalidad"){
-          fn = mis_colores3;
+          fn = colores2
+          label.html('<div class="label_box" style="background-color:#f7fcb9;"></div> <div class="label_text">1</div><div class="label_box" style="background-color:#addd8e;"></div> <div class="label_text">2</div><div class="label_box" style="background-color:#31a354;"></div><div class="label_text">3</div>');
         }
         else if(d === "Nivel de Riesgo"){
-          fn = mis_colores4;
+          fn = colores3 
+          label.html('<div class="label_box" style="background-color:#fee0d2;"></div> <div class="label_text">1</div><div class="label_box" style="background-color:#fc9272;"></div> <div class="label_text">2</div><div class="label_box" style="background-color:#de2d26;"></div><div class="label_text">3</div>');
+        }
+        else if(d === "Competencia y Rivalidad"){
+          fn = colores4
+          label.html('<div class="label_box" style="background-color:#eff3ff;"></div> <div class="label_text">0</div>' + '<div class="label_box" style="background-color:#bdd7e7;"></div> <div class="label_text">1</div>' + '<div class="label_box" style="background-color:#6baed6;"></div> <div class="label_text">2</div>'+ '<div class="label_box" style="background-color:#2171b5;"></div><div class="label_text">3</div>');
         }
         else if(d=="Elige una Variable"){
-          fn = "grey";
+          fn = "grey"
+          label.html('');
         }
+
         d3.selectAll(".color-boundary")
           .attr("fill",fn)
       }
