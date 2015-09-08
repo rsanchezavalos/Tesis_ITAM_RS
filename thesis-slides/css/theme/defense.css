@@ -11,8 +11,8 @@
  * GLOBAL STYLES
  *********************************************/
 body{
-  background: #F0F1EB;
-  background-color: #F0F1EB;  }
+  background: transparent;
+  background-color: transparent;  }
 
 .reveal .conclusion {
 	display: inline-block;
@@ -22,6 +22,12 @@ body{
 	font-weight: bold;
 	background-color: #8b743d;
 	color: #f7f3de;
+}
+
+.scrollable {
+    bottom: 0px;
+    overflow-y: auto  !important;
+    overflow-x: auto !important;
 }
 
 b {

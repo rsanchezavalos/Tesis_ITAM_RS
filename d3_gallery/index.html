@@ -83,7 +83,7 @@
           z-index:1;
           position: absolute;
           left:5%;
-          bottom: 10%;
+          top: 50%;
           font: 12px sans-serif;        
           border: 0px;      
           border-radius: 1px;           
@@ -265,7 +265,7 @@
 
     var label = d3.select("#map").append("div").attr("id","legend")    .attr("class", "tooltip_label").style("opacity", 30);
 
-    function zoom(xyz) {
+    function zoom_mun(xyz) {
       g.transition()
         .duration(750)
         .attr("transform", "translate(" + projection.translate() + ")scale(" + xyz[2] + ")translate(-" + xyz[0] + ",-" + xyz[1] + ")")
@@ -292,11 +292,11 @@
       if (d && mun !== d) {
         var xyz = get_xyz(d);
         mun = d;
-        zoom(xyz);
+        zoom_mun(xyz);
       } else {
         var xyz = [width / 2, height / 2, 1];
         mun = null;
-        zoom(xyz);
+        zoom_mun(xyz);
       }
     }
 

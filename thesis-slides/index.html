@@ -3,7 +3,7 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>reveal.js - The HTML Presentation Framework</title>
+		<title>Tesis ITAM</title>
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -12,7 +12,7 @@
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
 		<!-- Printing and PDF exports -->
-
+		<link rel="stylesheet" href="plugin/title-footer/title-footer.css">
 		<script>
 			var link = document.createElement( 'link' );
 			link.rel = 'stylesheet';
@@ -20,9 +20,6 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
-		<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.3.min.js"></script>
-	      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
 
 
 
@@ -42,14 +39,18 @@
 					<h2>Instituto Tecnológico Autónomo de México</h2>
 					<h1>Identificación de Patrones Municipales en la Violencia Relacionada con el Narcotráfico</h1>
 						<h3>Roberto Sánchez Ávalos</h3>
-						<div style="margin-top: .5em; font-size: .75em; line-height: 1">
-							Septiembre, 2015
-						</div>
+						<div style="margin-top: .5em; font-size: .8em; line-height: 1">
+							C.U. 000114535
+						</div>						
 						<br/>
 						<p>
 							<small><i>Asesor: </i></small>
 						</p>
 						<h4>Adolfo de Unánue Tiscareño</h4>
+						<div style="margin-top: .5em; font-size: .75em; line-height: 1">
+							Septiembre, 2015
+						</div>
+
 				</section>
 
 <!--Lámina Introducción-->
@@ -57,10 +58,10 @@
 				<section>
 					<h2>Índice</h2>
 					<div style="text-align: left;">
-						<ul>
-							<li>Introducción</li>
+						<ol  type="I">
+							<li>Motivación</li>
 							<li>Elección Racional —Interrogantes e Hipótesis—</li>						
-							<li>Construcción de Base de Datos</li>			
+							<li>Parametrización y Construcción de Base de Datos</li>			
 							<li>Metodología Econométrica</li>
 							<li>Análisis de Resultados</li>
 							<li>Herramientas de Minería de Datos</li>
@@ -71,20 +72,175 @@
 				</section>
 
 
-				<section id="result">
-					<script type="text/javascript">
-						$( "#result" ).load( "d3_gallery/index.html" );
-					</script>					
+				<section>
+				"Motivación"
+
 				</section>
 
 
+				<section>
+					<h2>Elección Racional</h2>
+					<p style= "font-size: .6em" >
+
+					La teoría de elección racional asume que el individuo es un agente orientado a objetivos, con interés propio y que toma decisiones estrategicamente. Para este individuo, tomar una decisión es el resultado final de un proceso activo de optimización de un set fijo y ordenado de preferencias. El individuo maximiza sus beneficios evaluando los costos esperados y las implicaciones de cada una de sus posibles acciones sujeto a restricciones de tiempo, espacio, habilidad e información disponible.
+					</p>
+					<br>
+					<p style= "font-size: .9em" align="left">
+					<i>Elección racional y Comportamiento Colectivo</i>
+					</p>
+					<br>
+					<p style= "font-size: .6em">
+					"Grandes cárteles que tienen capacidad de coordinación central y que se dedican sobre todo a la exportación de drogas. Estas empresas 'han alcanzado un alto nivel de integración vertical [...] que les permite generar economías de escala; explotar precios monopólicos; ahorrar recursos al evitar la competencia en actividades de corrupción y cabildeo; y tener un fácil acceso a los mercados financieros internacionales" (Guerrero 2009)
+					</p>
+
+						<aside class="notes">
+						Historia:
+						Uso, uso en violencia
+						Supuestos y comportamiento colectivo
+
+						</aside>
+				</section>
+
+				<section data-transition="slide" data-background="" data-background-transition="zoom">
+					<h2> Hipótesis de investigación </h2>
+					<div style="text-align: left; font-size: .7em" >
+						<ol>						
+						    <li>Municipios que presenten costos de oportunidad  más bajos frente a la delincuencia presentarán una mayor probabilidad de percibir violencia.</li>
+						    <li>Municipios que por su situación geográfica estratégica sean más valiosos para el narcotráfico presentarán una mayor probabilidad de percibir violencia.</li>
+		    				<li>La percepción de impunidad en el municipio tiene un efecto positivo en los delitos instrumentales.</li>
+							<li>Existencia de un fenómeno de relación espacio-espacial de la violencia ligada al narcotráfico.</li>
+						</ol>
+
+					<aside class="notes">
+						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
+					</aside>
+
+				</section>
+
+
+				<section data-transition="slide" data-background-transition="slide">
+				<section >
+					<H2>Parametrización y Construcción base de Datos</H2>
+					<br>
+					<div>
+					<ul>
+						<li>Costo de Oportunidad</li>
+						<br>
+						<li>Competencia y Rivalidad</li>
+						<br>
+						<li>Violencia e Impunidad</li>
+					</ul>
+					</div>
+
+				</section>
+
+<!--Comenzé a hacer la exploración de las variables tomando en cuenta investigaciones como [...] junto con tres modelos-->
+				<section>
+					<h3> Costo de Oportunidad </h3>		
+					<p style= "font-size: .6em" align="left">
+					Los municipios en México presentan características sociodemográficas muy diferentes que pueden promover o disuadir el crimen, la violencia y la presencia del narcotráfico. \cite{Ching1993} Una de las teorías que explica estas diferencias, dentro del marco teórico de elección racional, es el concepto del \textit{Capital Humano} que argumenta que los individuos observan, dentro de su función de optimización, el costo de oportunidad de delinquir que se ve modificado tanto por sus habilidades como por las oportunidades que existen en su entorno. \cite{Lochner2004} Bajo esta teoría, desde el punto de vista de los grupos del crimen organizado estas variaciones en los costos de oportunidad de los individuos impacta en la dificultad de penetración de los grupos del crimen organizado. Así, por ejemplo, en un municipio con niveles altos de desempleo y pocas oportunidades de desarrollo se esperaría que la incorporación de nuevos miembros a los cárteles del narcotráfico, tanto criminales experimentados \cite{Puga2012} como de jóvenes inexpertos \cite{Glaeser1999}, sea menos costosa.
+					</p>
+				</section>
+
+				<section>
+					<h3>Competencia y Rivalidad</h3>				
+					<p style= "font-size: .6em" align="left">
+					 Uno de los supuestos importantes del modelo es la orientación a objetivos y la maximización de utilidades con la que los grupos del crimen organizado toman decisiones, este supuesto ha sido ampliamente estudiado desde distintos puntos de vista como el criminalista \cite{Maltz1976}, el sociológico \cite{Maltz1976} y el político \cite{Guerrero2010}. Bajo este marco conceptual el interés potencial de un cártel por el control de una zona estaría definido no solo por la percepción de ingresos monetarios sino por la importancia estratégica del municipio para la industria. Esta sección describe la construcción de las variables a nivel municipal de las zonas de consumo, producción de narcóticos, laboratorios clandestinos, trasiego —ruta terrestre y puertos marítimos— así como la extracción ilegal de hidrocarburos. 
+					 </p>
+
+				</section>
+				<section>
+					<h3>Violencia e Impunidad</h3>		
+					<p style= "font-size: .6em" align="left">
+					La teoría de la disuasión de la certeza de castigo sostiene que la decisión de cometer crímenes instrumentales es susceptible de reaccionar a incentivos y procesos disuasivos, bajo esta teoría entre los costos percibidos se debe de incluir el riesgo de castigo pues este juega un papel importante en la toma de decisiones del agente. \cite{Matsueda2006}  Se establece entonces que la percepción de riesgo de castigo está relacionada con lo observado en el periodo anterior y lo observado en los municipios cercanos \(Riesgo de castigo_{t}(Riesgo de castigo_{t-1}, Riesgo de castigo_{t-1} vecinos) \). Para incluir esto en nuestra especificación econométrica se construyó una matriz de contigüidad espacial, donde municipios que comparten frontera física son considerados vecinos. Con esta matriz se obtuvo el valor promedio de ambas medidas entre todos los municipios considerados 'vecinos' para cada uno de ellos.
+					</p>			
+				</section>
+				</section>
+
+				<section>
+					<H2>Mapa con Variables construidas</H2>
+				</section>
+
+				<section>
+							<section>
+								<H2>Análisis Econométrico</H2>
+							</section>
+							<section>
+								"Modelos de Conteo para Datos Panel"
+							</section>
+							<section>
+								"Efectos de Correlación y Heterogeneidad Espacial"
+							</section>
+				</section>
+
+				<section>
+					<img  height="800" data-src="fig_tab/tables/tabla1.svg">
+				</section>
+
+				<section>
+							<section>
+								"Confrontación de hipótesis"
+							</section>
+
+							<section>
+								"Análisis costo de Oportunidad"
+							</section>
+							<section>
+								"Análisis competencia y Rivalidad"
+							</section>
+							<section>
+								"Análisis Violencia e Impunidad"
+							</section>
+				</section>
+
+				<section>
+							<section>
+								<H2>Minería de Datos</H2>
+							</section>
+							<section>
+								"Métodos de Agrupación"
+							</section>
+							<section>
+								"Análisis de Conglomerados"
+							</section>
+							<section>
+								"Dimensión Geográfica"
+							</section>
+				</section>
+
+				<section id="result">
+				"Mapa Variables Resumen"
+				</section>
+
+				<section>
+				<!--class="scrollable"-->
+					<h2>Árbol de Decisión</h2>
+					<img  height="600" data-src="fig_tab/Figures/tree_map_full_chad_2009.png">
+				</section>
+
+				<section>
+					<H2>Conclusiones</H2>
+				</section>
 
 			</div>
 
 		</div>
 
+
+
 		<script src="lib/js/head.min.js"></script>
 		<script src="js/reveal.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+		<script type="text/javascript">
+		$("#result" ).load( "d3_gallery/index.html");
+		</script>					
+
 
 		<script>
 
@@ -95,6 +251,9 @@
 				progress: true,
 				history: true,
 				center: true,
+				keyboard: true,
+				overview: true,
+				viewDistance: 30,
 				math: {
 	        mathjax: 'http://cdn.mathjax.org/mathjax/latest/MathJax.js',
 	        config: 'TeX-AMS_HTML-full'  // See http://docs.mathjax.org/en/latest/config-files.html
@@ -111,6 +270,9 @@
 					{ src: 'plugin/zoom-js/zoom.js', async: true },
 					{ src: 'plugin/notes/notes.js', async: true },
 					{ src: 'plugin/math/math.js', async: true },
+					//{ src: 'plugin/remotes/remotes.js', async: true },
+					{ src: 'plugin/title-footer/title-footer.js', async: true, callback: function() { title_footer.initialize(title="Identificación de Patrones Municipales en la Violencia Relacionada con el Narcotráfico - Roberto Sánchez Ávalos - ITAM",background="white"); } },
+
 								// MathJax
 
 
@@ -120,6 +282,16 @@
 			// Shows the slide number using default formatting
 			Reveal.configure({ slideNumber: true });
 			Reveal.configure({ slideNumber: 'c / t' });
+			Reveal.configure({
+			  keyboard: {
+			    13: 'next', // go to the next slide when the ENTER key is pressed
+			    //podemos poner 4 o 5 números para regresar a esas hojas.
+			   
+			    56: function() {Reveal.slide(8,1,5)}, //
+			    32: 'next'
+				//	27 esc, 13 ent, 32 space,  1-9 are 49-57 (0 is 48)
+			  }
+			});			
 			/*
 			var resizeSlide = function() {
    Reveal.configure({
@@ -131,6 +303,7 @@
 setInterval(resizeSlide, 1000);
 */
 		</script>
+
 
 	</body>
 </html>

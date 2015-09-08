@@ -2,19 +2,10 @@
 
 <html lang="en">
   <head>
-      <title>Tesis_map</title>
-      <meta charset="utf-8">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-      <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
-      <script src="//code.jquery.com/jquery-2.0.0.js"></script>
-
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-
 
     <style>
         #map {
+          position: relative;
           background-color: #fff;
           border-width:5px; 
           border: double #ccc;
@@ -61,68 +52,115 @@
 
         div.tooltip {   
           position: absolute;           
-          text-align: center;           
-          width: 300px;                  
-          height: 90px;                 
-          padding: 2px;             
-          font: 10px sans-serif;        
+          text-align: center;
+          padding-bottom: 10px;           
+          width: 200px;                  
+          font: sans-serif;        
+          height: auto;                 
           border: 0px;      
           border-radius: 1px;           
           pointer-events: none;         
-          font: 14px/16px Arial, Helvetica, sans-serif;
+          font: Arial, Helvetica, sans-serif;
           background: rgba(255,255,255,0.8);
           box-shadow: 0 0 15px rgba(0,0,0,0.2);
           border-radius: 5px;
+          font-size: medium;
         }
 
+        .tooltip_label {   
+          margin-left: 0%;
+          width: 10%;
+          height: 40%;  
+          float:left; 
+          z-index:1;
+          position: absolute;
+          left:5%;
+          bottom: 10%;
+          font: 6px sans-serif;        
+          border: 0px;      
+          border-radius: 1px;           
+          pointer-events: none;         
+          font: 7px/8px Arial, Helvetica, sans-serif;
+        }
+
+
         .boxed {
-            margin-left: 34%;
+            margin-right: 10%;
             text-align: center;  
-            width: 30%;  
+            width: 20%;  
             float:left; 
             z-index:1;
             position: absolute;
         }
+
+
         .mun_text{
             margin-left: auto;
             margin-right: auto;
             text-align: center;  
+            float:left;
+            font-size: medium;
+            pointer-events:none;
+                    }
+
+        .label_map{
+            margin-left: auto;
+            margin-right: auto;
             float:left; 
+            position: fixed;
+            top: 60%;
+            right: 0;
         }
 
         .info {
             padding: 6px 8px;
-            font: 14px/16px Arial, Helvetica, sans-serif;
+            font: Arial, Helvetica, sans-serif;
+            font-size: medium;
             background: white;
             background: rgba(255,255,255,0.8);
             box-shadow: 0 0 15px rgba(0,0,0,0.2);
             border-radius: 5px;
         }
+
         .info h4 {
+            font-size: medium ;
             margin: 0 0 5px;
             color: #777;
-
         }
 
-     .form-control{
-          display: inline-block;
-          width: 100%;                  
-          float:left;
+       .form-control{
+            width: 100%;                  
+            float:left;
+            pointer-events: auto;
+          }
+
+       .blank_row{
+            height: 10px 
+            background-color: #FFFFFF;
         }
-     .blank_row
-      {
-          height: 10px 
-          background-color: #FFFFFF;
+
+      .label_text{
+        width: 80%;
+        height: 30px;
+        float: left;        
       }
+      .label_box {   
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        padding-left: 10px
+        }
 
     </style>
   </head>
+
   <body>
 
     <div id="map">
     <div id="text_container">
-      <select class="form-control" onchange="myFunction(this.value)">
-        <option value="Elige una Variable">Elige una Variable</option>
+      <select class="form-control" name="variables" size="2" onchange="myFunction(this.value)">
+        <option value="Select a Variable">Select a Variable</option>
         <option value="Violencia e Impunidad">Violencia e Impunidad</option>
         <option value="Costo de Oportunidad">Costo de Oportunidad</option>
         <option value="Competencia y Rivalidad">Competencia y Rivalidad</option>
@@ -130,23 +168,21 @@
       </select>
       </div>
     </div>
-    <script src="//d3js.org/d3.v3.min.js"></script>
-    <script src="//d3js.org/topojson.v1.min.js"></script>
+
+
     <script>
 
     //******************************
     //Div information design, could be a simple box
 
-    var div = d3.select("body").append("div")
+    var div = d3.select("#map").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-     var text_div = d3.select("#text_container").attr("class","boxed").attr("id","text_container")
-     .style("opacity", 50)
-     .attr("width", m_width*.5).append("div").html('<br></br>Hover over a Municipality<br></br>').attr("id","mun_text").attr("class","info")
+     var text_div = d3.select("#text_container").attr("class","boxed")     .style("opacity", 50).style("pointer-events","none").style("font-size","medium")
+     .attr("width", m_width*.5).append("div").attr("id","mun_text").attr("class","info").html('<br></br>Hover over a Municipality<br></br>')
 
-
-    $("body").css("overflow", "auto");
+    $("body").css("overflow", "visible");
     //variable definition
     var m_width = $("#map").width() * .65,
         width = 960,
@@ -166,7 +202,6 @@
 
     var path = d3.geo.path()
         .projection(projection);
-
 
 
 
@@ -190,12 +225,13 @@
             .duration(300)      
             .style("opacity", .9);      
           console.log(d.properties);
-          div.html("<br> Municipio: " + d.properties.name + '<br/><br>Estado: ' + d.properties.state + "<br/>" )
+
+          div.style("font-size","small").html("<br> Municipio: " + d.properties.name + '<br/><br>Estado: ' + d.properties.state + "<br/>" )
             //
-            //.style("left", (d3.event.pageX) + "px")     
+            //.style("left", (d3.event.pageX + 50) + "px")     
             //.style("top", (d3.event.pageY ) + "px");;
-          .style("left", (window.pageXOffset) + 50*17 + "px")
-          .style("top", (window.pageYOffset) + 160   + "px");
+          .style("left", (window.pageXOffset) + 50*14 + "px")
+          .style("top", (window.pageYOffset)   + "px");
           text_div      
             .style("opacity", 50);      
           text_div.html("<h4>Variables Resumen</h4><br/>Violencia e Impunidad: " + d.properties.categoriaviolencia + "<br/>" + "<br/>Costo de Oportunidad: " + d.properties.costo_oportunidad + 
@@ -209,7 +245,6 @@
           })
         .on("click", municipality_clicked);
           });
-
     var svg = d3.select("#map").append("svg")
         .attr("id","map_container")
         .attr("preserveAspectRatio", "xMidYMid")
@@ -225,6 +260,7 @@
 
     var g = svg.append("g");
 
+    var label = d3.select("#map").append("div").attr("id","legend")    .attr("class", "tooltip_label").style("opacity", 30).style("font-size","medium");
 
     function zoom_mun(xyz) {
       g.transition()
@@ -246,6 +282,7 @@
       return [x, y, z];
     }
 
+
     //municipality_clicked function
     function municipality_clicked(d) {
       g.selectAll(["#states"]).remove();
@@ -261,22 +298,12 @@
       }
     }
 
-
       //******************************
       //Color Functions Wrapper
       d3.select(self.frameElement).style("height", height + "px");
       d3.select()
-        function mycolorfunction(value){
-          if (value.properties.name.length % 2 == 1) {
-            return "#af8dc3";
-          } else{
-            return "#9e0142";
-          }
-        }
 
-
-
-      var mis_colores1 = function(d){
+      var colores1 = function(d){
         if (d.properties.categoriaviolencia == 1) {
           return "#efedf5"
         } else if(d.properties.categoriaviolencia == 2){
@@ -288,7 +315,7 @@
         }
       }
 
-      var mis_colores2 = function(d){
+      var colores2 = function(d){
         if (d.properties.costo_oportunidad == 1) {
           return "#f7fcb9"
         } else if(d.properties.costo_oportunidad == 2){
@@ -300,7 +327,19 @@
         }
       }
 
-      var mis_colores3 = function(d){
+      var colores3 = function(d){
+        if (d.properties.riesgo_violencia == 1) {
+          return "#fee0d2"
+        } else if(d.properties.riesgo_violencia == 2){
+          return "#fc9272"
+        } else if(d.properties.riesgo_violencia == 3){
+          return "#de2d26"        
+        } else{
+          return "black"
+        }
+      }
+
+      var colores4 = function(d){
         if (d.properties.industria  == 0) {
           return "#eff3ff"
         } else if(d.properties.industria == 1){
@@ -313,37 +352,31 @@
           return "black"
         }
       }
-      var mis_colores4 = function(d){
-        if (d.properties.riesgo_violencia == 1) {
-          return "#fee0d2"
-        } else if(d.properties.riesgo_violencia == 2){
-          return "#fc9272"
-        } else if(d.properties.riesgo_violencia == 3){
-          return "#de2d26"        
-        } else{
-          return "black"
-        }
-      }
-
 
 
       function myFunction(d){
         var fn;
         if(d === "Violencia e Impunidad"){
-          fn = mis_colores1;
+          fn = colores1
+          label.html('Violencia e Impunidad<br><div class="label_box" style="background-color:#efedf5;"></div> <div class="label_text">1</div><div class="label_box" style="background-color:#bcbddc;"></div> <div class="label_text">2</div><div class="label_box" style="background-color:#756bb1;"></div><div class="label_text">3</div>');
         }
         else if(d === "Costo de Oportunidad"){
-          fn = mis_colores2;
-        }
-        else if(d === "Competencia y Rivalidad"){
-          fn = mis_colores3;
+          fn = colores2
+          label.html('Costo de Oportunidad<br><div class="label_box" style="background-color:#f7fcb9;"></div> <div class="label_text">1</div><div class="label_box" style="background-color:#addd8e;"></div> <div class="label_text">2</div><div class="label_box" style="background-color:#31a354;"></div><div class="label_text">3</div>');
         }
         else if(d === "Nivel de Riesgo"){
-          fn = mis_colores4;
+          fn = colores3 
+          label.html('Nivel de Riesgo<br><div class="label_box" style="background-color:#fee0d2;"></div> <div class="label_text">1</div><div class="label_box" style="background-color:#fc9272;"></div> <div class="label_text">2</div><div class="label_box" style="background-color:#de2d26;"></div><div class="label_text">3</div>');
         }
-        else if(d=="Elige una Variable"){
-          fn = "grey";
+        else if(d === "Competencia y Rivalidad"){
+          fn = colores4
+          label.html('Competencia y Rivalidad <br><div class="label_box" style="background-color:#eff3ff;"></div> <div class="label_text">0</div>' + '<div class="label_box" style="background-color:#bdd7e7;"></div> <div class="label_text">1</div>' + '<div class="label_box" style="background-color:#6baed6;"></div> <div class="label_text">2</div>'+ '<div class="label_box" style="background-color:#2171b5;"></div><div class="label_text">3</div>');
         }
+        else if(d=="Select a Variable"){
+          fn = "grey"
+          label.html('');
+        }
+
         d3.selectAll(".color-boundary")
           .attr("fill",fn)
       }
