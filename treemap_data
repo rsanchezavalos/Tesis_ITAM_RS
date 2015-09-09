@@ -1,0 +1,113 @@
+
+import pandas as pn
+data = pn.read_csv("tree_data_2008_2009.csv")
+sub = data[data["indicadora"]==1]
+sub = sub[["industria","costo_oportunidad","categoriaviolencia","riesgo_violencia","indicadora"]]
+grouped = sub.groupby(["categoriaviolencia","costo_oportunidad","industria","riesgo_violencia"]).count()
+grouped.reset_index(inplace=True)
+
+grouped = grouped[["categoriaviolencia","costo_oportunidad","industria","riesgo_violencia","indicadora"]]
+
+level = ["categoriaviolencia","costo_oportunidad","industria","riesgo_violencia"]
+variables = [0, 1, 2, 3]
+
+
+for var in level:
+	for num in variables:
+		try:
+			grouped[var][grouped[var] == num] = str(num)  
+			print "hola"
+		except:
+			print "error"
+			pass
+
+
+def recur_dictify(frame):
+    if len(frame.columns) == 1:
+        if frame.values.size == 1: return frame.values[0][0]
+        return frame.values.squeeze()
+    grouped = frame.groupby(frame.columns[0])
+    d = {k:recur_dictify(g.ix[:,1:]) for k,g in grouped}
+    return d
+
+
+pie_dict = recur_dictify(grouped)
+
+
+
+
+
+{'1':
+ {
+	'1': {
+		'0': {'1': 388, '2': 7, '3': 3},
+		'1': {'1': 175, '2': 4, '3': 9},
+		'2': {'1': 91, '2': 10, '3': 6},
+		'3': {'1': 3}},
+	'2': {
+		'0': {'1': 8, '2': 4, '3': 5},
+		'1': {'1': 3, '2': 4, '3': 6},
+		'2': {'1': 5, '2': 8, '3': 14},
+		'3': {'1': 1}},
+	'3': {
+		'0': {'1': 3, '3': 5}, 
+		'1': {'1': 4}, 
+		'2': {'1': 1, '3': 6}}
+  },
+
+ '2': 
+
+ {
+	'1': {
+		'0': {'1': 54, '2': 7, '3': 2}, 63
+		'1': {'1': 84, '2': 35, '3': 1}, 120
+		'2': {'1': 13, '2': 7}, 20
+		'3': {'1': 9, '2': 2, '3': 2}}, 13
+	'2': {
+		'0': {'1': 9, '2': 13, '3': 1},23
+		'1': {'1': 28, '2': 33, '3': 15},76
+		'2': {'1': 4, '2': 6, '3': 3},13
+		'3': {'1': 2, '3': 1}},3
+	'3': {
+		'1': {'1': 1, '2': 1, '3': 8}, 10
+		'2': {'3': 4}, 4
+		'3': {'2': 2}}},2
+},
+
+ '3': 
+{1336
+	'1': {1008
+		'0': {'1': 363, '2': 27, '3': 11},401
+		'1': {'1': 357, '2': 76, '3': 17},450
+		'2': {'1': 80, '2': 17, '3': 8},105
+		'3': {'1': 45, '2': 3, '3': 4}},52
+	'2': {247
+		'0': {'1': 34, '2': 28, '3': 11},73
+		'1': {'1': 31, '2': 50, '3': 19},100
+		'2': {'1': 22, '2': 18, '3': 28},68
+		'3': {'1': 2, '2': 2, '3': 2}},6
+	'3': {81
+		'0': {'1': 4, '3': 4},8
+		'1': {'1': 5, '2': 1, '3': 17},23
+		'2': {'1': 7, '2': 3, '3': 21},31
+		'3': {'1': 6, '2': 1, '3': 12}}}19
+}
+
+
+code_hierarchy_data = 
+["",[totalA,totalB],
+    {
+        "levelA_A":
+        [
+            "levelA_A",[totalA_A_A,totalA_A_A],
+                {
+                "levelB_A",[totalA_levelB_A,totalB_levelB_A],
+                    {}
+                }
+            "levelA_B",[totalA_levelA_B,totalB_levelA_B],
+                {}
+        ],
+        "levelA_B":[],
+        "levelA_C":[]
+    }
+];
