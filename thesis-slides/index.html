@@ -23,6 +23,30 @@
 
 
 
+	<style>
+		.zoom_r {
+			display:inline-block;
+			position: relative;
+		}
+		
+		/* magnifying glass icon */
+		.zoom_r:after {
+			content:'';
+			display:block; 
+			width:33px; 
+			height:33px; 
+			position:absolute; 
+			top:0;
+			right:0;
+			background:"white";
+		}
+
+		.zoom_r img {
+			display: block;
+		}
+
+		.zoom_r img::selection { background-color: "white"; }
+	</style>
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
 		<![endif]-->
@@ -174,7 +198,11 @@
 				</section>
 
 				<section>
-					<img  height="800" data-src="fig_tab/tables/tabla1.svg">
+					<!--<img  height="800" data-src="fig_tab/tables/tabla1.svg">-->
+					<span class='zoom_r' id='ex1'>
+						<img src='fig_tab/tables/tabla1.svg' width='555' background-color= "white" height='900' alt='Daisy on the Ohoopee'/>
+					</span>
+
 				</section>
 
 				<section>
@@ -215,7 +243,7 @@
 				<section>
 				<!--class="scrollable"-->
 					<h2>Árbol de Decisión</h2>
-					<img  height="600" data-src="fig_tab/Figures/tree_map_full_chad_2009.png">
+					<img height="600" data-src="fig_tab/Figures/tree_map_full_chad_2009.png">
 				</section>
 
 				<section id="treemap">
@@ -241,6 +269,8 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<script type='text/javascript' src='plugin/zoom_jackmoore/jquery.zoom.js'></script>  
+
 
 		<script type="text/javascript">
 		$("#result" ).load( "d3_gallery/resume_map/index.html");
@@ -248,6 +278,15 @@
 		<script type="text/javascript">
 		$("#treemap" ).load( "d3_gallery/treemap/index.html");
 		</script>			
+
+	<script>//zoom plugin
+		$(document).ready(function(){
+			$('#ex1').zoom();
+			$('zoomImg').attr(background,'white')
+		});
+	</script>
+
+				
 
 		<script>
 
