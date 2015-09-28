@@ -79,18 +79,14 @@
 *database query;
 	use "BDTesis.dta"
 	xtset id year
-	*keep if year==2008 & hom_rate_riv > 0 
 	keep if year==2008 
-	
+
 *1) Clusterización Socioeconómica -Wardslinkage-;
 	
 	egen std_mean_edu = std(mean_edu) 
 	*sutex2 lnPIB  ind_marginacion niv_pobreza  coef_gini prop_desempleo mean_edu prop_sinprim std_mean_edu LWhom_rate_riv Lhom_rate_riv Leficiencia LWeficiencia , minmax
 
 	sum lnPIB coef_gini prop_desempleo std_mean_edu prop_sinprim	
-	*subset
-	cluster wardslinkage lnPIB coef_gini prop_desempleo mean_edu prop_sinprim, measure(L2) name(cluster1)
-	*full
 	cluster wardslinkage lnPIB coef_gini prop_desempleo std_mean_edu prop_sinprim, measure(L2) name(cluster1)
 
 	cluster dendrogram cluster1, cutnumber(5) showcount 
@@ -110,35 +106,21 @@
 	replace industria=2 if (PortGolfo==1 | e_mar==1 | e_pop==1 | mar==1 | coca==1 | opi==1)
 	replace industria=1 if (route==1 | tomas==1)
 tabstat hom_rate_riv , statistics( mean var median ) by(industria) columns(variables)
-	
 
 *COSTO DE OPORTUNIDAD -> re-ordenamiento por nivel de violencia;
 tabstat hom_rate_riv , statistics( mean var median ) by(estructura_) columns(variables)
 	gen costo_oportunidad = 0
-	*subset
-	replace costo_oportunidad=1 if estructura_==1
-	replace costo_oportunidad=2 if estructura_==2
-	replace costo_oportunidad=3 if estructura_==3
-	*full
 	replace costo_oportunidad=3 if estructura_==1
 	replace costo_oportunidad=2 if estructura_==2
 	replace costo_oportunidad=1 if estructura_==3
 
 tabstat hom_rate_riv , statistics( mean var median ) by(costo_oportunidad) columns(variables)
-*full - más violencia en municipios ricos-
-*subset más violencia en municipios pobres
-
 tabstat PIB ind_marginacion prop_desempleo  mean_edu if hom_rate_riv>0, statistics( mean var median ) by(costo_oportunidad) columns(variables)
 tabstat hom_rate_riv , statistics( mean median var count) by(costo_oportunidad) columns(variables) 
 
 *CATEGORIA VIOLENCIA -> re-ordenamiento por nivel de violencia;
 tabstat hom_rate_riv , statistics( mean var median ) by(categoriaviolencia2) columns(variables)
 	gen categoriaviolencia = 0
-	*subset
-	replace categoriaviolencia=2 if categoriaviolencia2==1
-	replace categoriaviolencia=1 if categoriaviolencia2==2
-	replace categoriaviolencia=3 if categoriaviolencia2==3
-	*full
 	replace categoriaviolencia=1 if categoriaviolencia2==1
 	replace categoriaviolencia=2 if categoriaviolencia2==2
 	replace categoriaviolencia=3 if categoriaviolencia2==3
@@ -151,32 +133,19 @@ sum hom_rate_riv, detail
 centile (hom_rate_riv) , centile(75, 90,100)
 
 gen riesgo_violencia = 0
-*full
 	replace riesgo_violencia = 1 if  hom_rate_riv <=   .9479672
 	replace riesgo_violencia = 2 if  hom_rate_riv <=   10.16147 & riesgo_violencia  !=1
 	replace riesgo_violencia = 3 if  hom_rate_riv > 10.16147 & riesgo_violencia  !=1 & riesgo_violencia  !=2
-*subset? checar
-	replace riesgo_violencia = 1 if  hom_rate_riv <=   25.81986
-	replace riesgo_violencia = 2 if  hom_rate_riv <=   66.885  & riesgo_violencia  !=1
-	replace riesgo_violencia = 3 if  hom_rate_riv > 799.7218  & riesgo_violencia  !=1 & riesgo_violencia  !=2
 
 tabstat hom_rate_riv , statistics( mean var median count) by(riesgo_violencia) columns(variables)
 
-save "C:\Users\rsanchez\Dropbox\tesis\Cuerpo\FINAL\shape_bd.dta", replace
+drop categoriaviolencia2
+drop estructura_
 
-*subset
+save "C:\Users\rsanchez\Dropbox\tesis\Cuerpo\FINAL\shape_bd_full.dta", replace
 
-*full	
-gen riesgo_violencia = 0
-replace riesgo_violencia = 1 if  hom_rate_riv <=   25.81986
-replace riesgo_violencia = 2 if  hom_rate_riv <=   66.885  & riesgo_violencia  !=1
-replace riesgo_violencia = 3 if  hom_rate_riv > 799.7218  & riesgo_violencia  !=1 & riesgo_violencia  !=2
-tabstat hom_rate_riv , statistics( mean var median count) by(riesgo_violencia) columns(variables)
-
-
-
-keep costo_oportunidad categoriaviolencia  industria riesgo_violencia 
-outsheet using "C:\Users\rsanchez\Dropbox\tesis\decisiontree_test_subset.csv", comma replace
+keep costo_oportunidad categoriaviolencia  industria riesgo_violencia hom_rate_riv 
+outsheet using "C:\Users\rsanchez\Dropbox\tesis\decisiontree_test.csv", comma replace
 
 ***********************************;
 ***************Anexo 1*************;		
